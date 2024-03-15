@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DDA Line Drawing Algorithm</title>
+<style>
+    canvas {
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+    <a href="./index.html" >link to index</a>
+
+<canvas id="myCanvas" width="500" height="500"></canvas>
+
+<script>
+    // Get the canvas element and its context
+    var canvas = document.getElementById('myCanvas');
+    var ctx = canvas.getContext('2d');
+
+    // Variables to store mouse coordinates
+    var startX, startY, endX, endY;
+    var isDrawing = false;
+
+    // Function to calculate DDA line
+    function drawLineDDA(x1, y1, x2, y2) {
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        var steps = Math.max(Math.abs(dx), Math.abs(dy));
+        var xIncrement = dx / steps;
+        var yIncrement = dy / steps;
+        var x = x1;
+        var y = y1;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(Math.round(x), Math.round(y));
+        ctx.stroke();
+
+        for (var i = 0; i < steps; i++) {
+            x += xIncrement;
+            y += yIncrement;
+            ctx.lineTo(Math.round(x), Math.round(y));
+            ctx.stroke();
+        }
+    }
+
+    // Event listeners for mouse events
+    canvas.addEventListener('mousedown', function(event) {
+        startX = event.offsetX;
+        startY = event.offsetY;
+        isDrawing = true;
+    });
+
+    canvas.addEventListener('mousemove', function(event) {
+        if (isDrawing) {
+            endX = event.offsetX;
+            endY = event.offsetY;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawLineDDA(startX, startY, endX, endY);
+        }
+    });
+
+    canvas.addEventListener('mouseup', function(event) {
+        if (isDrawing) {
+            endX = event.offsetX;
+            endY = event.offsetY;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawLineDDA(startX, startY, endX, endY);
+            isDrawing = false;
+        }
+    });
+</script>
+</body>
+</html>
